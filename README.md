@@ -179,9 +179,15 @@ precise-convert tng-computer.net
 
 Obviously replacing the .net file name with your own. You'll get a .pb and .pb.params file. Dump those into your home dir on your Picroft. Follow the <a href="https://mycroft-ai.gitbook.io/docs/using-mycroft-ai/customizations/wake-word">instructions here</a> to edit your Mycroft config to tell it about the new file. I found that for me, the trigger_level and sensitivity had to be set quite permissively, at 1 and 0.9, respectively. It unintentionally activates a few times a day, at present, but that's because this is a new model and I need to add some more not-wake-word data. It's quite usable!
 
-Some post-training stuff: you’re going to have to re-model. No, really, you will, and that’s okay. Your model might be great, but there will be sounds that you haven’t anticipated. Keep a little notebook of some of the things it unintentionally activates to, and do some additional recordings. You can also turn on wake-word saving on the Picroft (or the Mycroft) using the following setting, which is easier to show a screenshot of than to write:
+Some post-training stuff: you’re going to have to re-model. No, really, you will, and that’s okay. Your model might be great, but there will be sounds that you haven’t anticipated. Keep a little notebook of some of the things it unintentionally activates to, and do some additional recordings. You can also turn on wake-word saving on the Picroft (or the Mycroft) using the setting "record_wake_words", which is easier to show a screenshot of than to write:
 
 ![settings](https://user-images.githubusercontent.com/33769453/118408237-4d8f3c80-b64a-11eb-9f3c-28e39d1a0f17.jpg)
+
+You may summon these settings be using:
+
+```
+mycroft-config edit user
+```
 
 By default, the Mycroft / Picroft will save all activations of the wake-word as a wav and store them in /tmp/mycroft_wake_words. From there, you can SSH in (or whatever) and copy all the unintentional activations over to your not-wake-word directory for retraining.
 
