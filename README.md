@@ -159,4 +159,4 @@ precise-convert tng-computer.net
 
 Obviously replacing the .net file name with your own. You'll get a .pb and .pb.params file. Dump those into your home dir on your Picroft. Follow the <a href="https://mycroft-ai.gitbook.io/docs/using-mycroft-ai/customizations/wake-word">instructions here</a> to edit your Mycroft config to tell it about the new file. I found that for me, the trigger_level and sensitivity had to be set quite permissively, at 1 and 0.9, respectively. It unintentionally activates a few times a day, at present, but that's because this is a new model and I need to add some more not-wake-word data. It's quite usable!
 
-You may see an error that the .params file isn't working. This isn't a problem...because reasons. Enjoy your new wake word, and LLAP. 🖖🏻
+You may see an error that the .params file isn't working. This isn't a problem...because reasons. Enjoy your new wake word, and LLAP. 🖖🏻 (Many thanks to ElTocino for their help in getting this software working.)
