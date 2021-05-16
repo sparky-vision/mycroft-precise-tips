@@ -110,7 +110,7 @@ Which allows all users and all groups the ability to read, write, and execute th
 mycroft-start all restart
 ```
 
-Okay, why did we replace all of that? Well, the current image (maybe updated by now) of Picroft does <em>not</em> include the latest version of precise; it’s running and older 0.2.0 version. This mis-match will cause your models to either: activate at the sound of an ant walking across the carpeting, or alternatively, it just won’t hear the wake word…at all. If either of these things are happening to you, it’s almost certainly due to a version mismatch. (Or a terrible quality data set, but let’s address that below.)
+Okay, why did we replace all of that? Well, the current image (maybe updated by now) of Picroft does <em>not</em> include the latest version of precise; it’s running an older 0.2.0 version. This mis-match will cause your models to either: activate at the sound of an ant walking across the carpeting, or alternatively, it just won’t hear the wake word…at all. If either of these things are happening to you, it’s almost certainly due to a version mismatch. (Or a terrible quality data set, but let’s address that below.)
 
 Onto modeling. There are several guides to running this software. The <a href="https://github.com/MycroftAI/mycroft-precise/wiki/Training-your-own-wake-word#how-to-train-your-own-wake-word">official Mycroft one is here</a>, and some additional thoughts by <a href="https://github.com/el-tocino/localcroft/blob/master/precise/Precise.md">contributor El-Tocino are here</a>. Here are <em>my</em> thoughts, having messed with this thing for a while.
 
