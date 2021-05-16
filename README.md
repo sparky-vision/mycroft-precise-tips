@@ -78,7 +78,7 @@ See the line that says 'h5py'? Change that to read
 'h5py<3.0.0',
 ```
 
-Save the file, and exit pico or nano or whatever you're using. (Vi? Emacs? Vim? Editing the inodes with a magnetic needle?) Hooray, we can now install precise. This is done by running
+Save the file, and exit pico or nano or whatever you're using. (Vi? Emacs? Vim? Editing the <a href="https://xkcd.com/378/">inodes with a magnetic needle</a>?) Hooray, we can now install precise. This is done by running
 
 ```
 ./setup.sh
