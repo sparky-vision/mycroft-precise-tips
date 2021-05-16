@@ -1,4 +1,4 @@
-I have recently become enamored with an open-source virtual assistant project, name of Mycroft. One of the advantages of this system, besides its focus on privacy and security, is that you can train your own wake word, as well as perform various other customizations. However, the documentation for precise was, I thought, slightly lacking, and so that motivated me, once I figured out the process, to write it down, so that others may have a guide to help them.
+I have recently become enamored with an open-source virtual assistant project, name of Mycroft. One of the advantages of this system, besides its focus on privacy and security, is that you can train your own wake word, as well as perform various other customizations. However, the documentation for precise was, I thought, slightly lacking, and so that motivated me, once I figured out the process, to write it down, so that others may have a guide to help them. This guide assumes you want to use the Picroft 
 
 First, it's important to know that while the process isn't particularly difficult, but it is a little time-consuming. You'll want to set aside some time to make your recordings in a quiet place. Further, this guide will assume a level of familiarity with basic Linux / Unix / *nix commands, some familiarity with using a command line, and knowledge of how to use a computer. None of this gets programmer-y or difficult, but some people see a command line and head for the hills. Embrace it, it's fun.
 
@@ -98,12 +98,18 @@ Step five: and one of the most important ones. Download the zip of mycroft-preci
 And replace the existing precise-engine folder there with the one you just downloaded. Also, I've found you need to do the following bit of dumbassery:
 
 ```
-chmod 777/home/pi/.mycroft/precise/precise-engine/precise-engine
+chmod 777 /home/pi/.mycroft/precise/precise-engine/precise-engine
 ```
 
-Which allows all users and all groups the ability to read, write, and execute that file. I tried with lesser permissions and ran into errors. Probably not a big deal, you <em>are</em> behind a decent firewall and not exposing your Pi to unknown incoming connections, right? Right?? Reboot your pi. (Strictly necessary? ...probably?)
+Which allows all users and all groups the ability to read, write, and execute that file. I tried with lesser permissions and ran into errors. Probably not a big deal, you <em>are</em> behind a decent firewall and not exposing your Pi to unknown incoming connections, right? Right?? Reboot your pi. Strictly necessary? ...probably not? At the very least, do:
 
-Okay, modeling. There are several guides to running this software. The <a href="https://github.com/MycroftAI/mycroft-precise/wiki/Training-your-own-wake-word#how-to-train-your-own-wake-word">official Mycroft one is here</a>, and some additional thoughts by <a href="https://github.com/el-tocino/localcroft/blob/master/precise/Precise.md">contributor ElTocino are here</a>. Here are <em>my</em> thoughts, having messed with this thing for a while.
+```
+mycroft-start all restart
+```
+
+Okay, why did we replace all of that? Well, the current image (maybe updated by now) of Picroft does <em>not</em> include the latest version of precise; it’s running and older 0.2.0 version. This mis-match will cause your models to either: activate at the sound of an ant walking across the carpeting, or alternatively, it just won’t hear the wake word…at all. If either of these things are happening to you, it’s almost certainly due to a version mismatch. (Or a terrible quality data set, but let’s address that below.)
+
+Onto modeling. There are several guides to running this software. The <a href="https://github.com/MycroftAI/mycroft-precise/wiki/Training-your-own-wake-word#how-to-train-your-own-wake-word">official Mycroft one is here</a>, and some additional thoughts by <a href="https://github.com/el-tocino/localcroft/blob/master/precise/Precise.md">contributor El-Tocino are here</a>. Here are <em>my</em> thoughts, having messed with this thing for a while.
 
 The official Mycroft-precise training page is a good start, but some additional information is needed. I say this because once I got the hang of creating models, I was able to do so without using almost any of the tools other than precise-train, precise-listen, precise-test, and precise-collect. You should also go ahead and make all of the directories that it asks you to. In my case, I called my model tng-computer (I'm a Trek fan, can you tell?) and so my dirs were
 <ul>
@@ -141,9 +147,9 @@ The downloadable sound sets are pretty self-explanatory. Download and unzip them
 arecord -f S16_LE -t wav -r 16000 --max-file-time 30 roomnoise_may16.wav
 ```
 
-arecord is a little dumb in that it doesn't give you feedback that it's saving additional files, but it is. This command tells arecord to start recording in 30-second increments. This is useful because if someone says the wake-word accidentally, you can go back and pull that one file without losing the rest of your data.<br>
+arecord is a little dumb in that it doesn't give you feedback that it's saving additional files, but it is. This command tells arecord to start recording in 30-second increments. This is useful because if someone says the wake-word accidentally, you can go back and pull that one file without losing the rest of your data. The name at the end is just…whatever you want to name it. I find the date and a description of the contents to be helpful for organizing purposes.<br>
 
-With the Google Speech Commands, and Public Domain sounds, and all my room noise and rhymes, I had about ~51K not-wake-sounds. This is probably sufficient. You can now run precise-train. I didn't bother with the really long commands that ElTocino posted - in part because I couldn't find documentation as to what those switches do. (Maybe they'll chime in here...) For my purposes, it was enough to do
+With the Google Speech Commands, and Public Domain sounds, and all my room noise and rhymes, I had about ~51K not-wake-sounds. This is probably sufficient. You can now run precise-train. I didn't bother with the really long commands that El-Tocino posted - in part because I couldn't find documentation as to what those switches do. (Maybe they'll chime in here...) For my purposes, it was enough to do:
 
 ```
 precise-train tng-computer.net tng-computer/ -e 150
@@ -151,7 +157,21 @@ precise-train tng-computer.net tng-computer/ -e 150
 
 It's not many epochs (cycles of training) and that's okay! I started hitting val_acc of 1.0 <em>really</em> quickly after about 100 epochs, and I think that if you have a high-quality dataset, I suspect you'll see the same results. You'll want to be hitting in the upper .9s, or you won't have a good model.
 
-If you get to those numbers, congrats, you can now do the exciting part and use:
+Once you think you have a good model, you can use
+
+```
+precise-test tng-computer.net tng-computer/
+```
+
+Replacing those file names with yours, obviously, to see how well the model performs with the testing data. I recommend more testing data than the Mycroft-precise page does, I think it’s more informative. Precise-listen is also <em>extremely</em> helpful here:
+
+```
+precise-listen tng-computer.net
+```
+
+Which basically “auditions” your model for use with the currently-plugged in microphone. Belly on up to your mic, clear your throat, throw back a shot of whiskey if you’re of the legal drinking age in the country of your residence and if doing so complies with all relevant local and national laws, and say your wake word a few times. It will print a bunch of “XXXXXxxxxxx” on the screen as a sort of realtime graph. It’s kinda hacky, but also, props to whomever coded it, because it also works just fine. If it works, you should (assuming your sound is up) hear a happy little major third ding and see lots of uppercase Xs.
+
+If you get good numbers and test results, congrats, you can now do the exciting part and use:
 
 ```
 precise-convert tng-computer.net
@@ -159,4 +179,12 @@ precise-convert tng-computer.net
 
 Obviously replacing the .net file name with your own. You'll get a .pb and .pb.params file. Dump those into your home dir on your Picroft. Follow the <a href="https://mycroft-ai.gitbook.io/docs/using-mycroft-ai/customizations/wake-word">instructions here</a> to edit your Mycroft config to tell it about the new file. I found that for me, the trigger_level and sensitivity had to be set quite permissively, at 1 and 0.9, respectively. It unintentionally activates a few times a day, at present, but that's because this is a new model and I need to add some more not-wake-word data. It's quite usable!
 
-You may see an error that the .params file isn't working. This isn't a problem...because reasons. Enjoy your new wake word, and LLAP. 🖖🏻 (Many thanks to ElTocino for their help in getting this software working.)
+Some post-training stuff: you’re going to have to re-model. No, really, you will, and that’s okay. Your model might be great, but there will be sounds that you haven’t anticipated. Keep a little notebook of some of the things it unintentionally activates to, and do some additional recordings. You can also turn on wake-word saving on the Picroft (or the Mycroft) using the following setting, which is easier to show a screenshot of than to write:
+
+![settings](https://user-images.githubusercontent.com/33769453/118408237-4d8f3c80-b64a-11eb-9f3c-28e39d1a0f17.jpg)
+
+By default, the Mycroft / Picroft will save all activations of the wake-word as a wav and store them in /tmp/mycroft_wake_words. From there, you can SSH in (or whatever) and copy all the unintentional activations over to your not-wake-word directory for retraining.
+
+You’ll have to retrain a few times, and that’s okay. It’s quite rewarding to keep zeroing in on getting the thing as close to perfect as you can, and besides, if you weren’t into this, you’d just be using “Hey Google” anyway. ;)
+
+You may see an error that the .params file isn't working. This isn't a problem...because reasons. Enjoy your new wake word, and LLAP. 🖖🏻 (Many thanks to El-Tocino for their help in getting this software working.)
