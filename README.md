@@ -144,6 +144,10 @@ Record lots of those. In addition, you will find that random noises that you did
 
 As for how to do this...
 
+[Update - May 22nd, 2021]
+
+I've written an update regarding getting good recordings, which you can find <a href="https://github.com/sparky-vision/mycroft-wake-word-recording-tips">here</a>. tl;dr: don't use precise-collect, record in something like Audacity instead.
+
 The downloadable sound sets are pretty self-explanatory. Download and unzip them into your not-wake-word directory. (Precise-train looks in directories recursively, so don't worry about having folders within folders.) Recordings of the actual wake-word, and rhymes, are best done with the precise-collect tool. Just give them descriptive names so you can remember what they are, and start slappin' that spacebar. Don't leave silence at the beginning or end of the recording, this will mess up the training. For room noise recordings, you can use arecord:
 
 ```
